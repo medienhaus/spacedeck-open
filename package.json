@@ -36,6 +36,7 @@
     "node-server-screenshot": "^0.2.1",
     "nodemailer": "^4.6.7",
     "passport": "^0.4.1",
+    "passport-ldapauth": "^3.0.1",
     "passport-local": "^1.0.0",
     "phantomjs-prebuilt": "^2.1.16",
     "read-chunk": "^2.1.0",
