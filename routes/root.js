@@ -1,5 +1,7 @@
 "use strict";
 
+const connectEnsureLogin = require('connect-ensure-login');
+
 const config = require('config');
 
 const redis = require('../helpers/redis');
@@ -22,7 +24,7 @@ router.get('/ping', (req, res) => {
   res.status(200).json({"status": "ok"})
 });
 
-router.get('/spaces', (req, res) => {
+router.get('/spaces', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
   res.render('spacedeck', { config:config, user:req.user });
 });
 
@@ -34,7 +36,7 @@ router.get('/confirm/:token', (req, res) => {
   res.render('spacedeck', { config:config, user:req.user });
 });
 
-router.get('/folders/:id', (req, res) => {
+router.get('/folders/:id', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
   res.render('spacedeck', { config:config, user:req.user });
 });
 
@@ -86,7 +88,7 @@ router.get('/en', (req, res) => {
   res.redirect("/t/end");
 });
 
-router.get('/account', (req, res) => {
+router.get('/account', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
   res.render('spacedeck');
 });
 
@@ -130,7 +132,7 @@ router.get('/s/:hash', (req, res) => {
   });
 });
 
-router.get('/spaces/:id', (req, res) => {
+router.get('/spaces/:id', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
   res.render('spacedeck', { config:config, user:req.user });
 });
 

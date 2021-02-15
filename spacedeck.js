@@ -15,11 +15,13 @@ const favicon = require('serve-favicon');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+
+// authentication
 const passport = require('passport');
 const session = require("express-session");
 
 const i18n = require('i18n-2');
-const helmet = require('helmet');
+// const helmet = require('helmet');
 
 const express = require('express');
 const app = express();
@@ -79,7 +81,9 @@ app.disable('x-powered-by');
 
 //app.use(require("./middlewares/error_helpers"));
 //app.use(require("./middlewares/cors"));
-app.use(require("./middlewares/session"));
+
+// app.use(require("./middlewares/session"));
+
 app.use(require("./middlewares/i18n"));
 app.use("/api", require("./middlewares/api_helpers"));
 app.use('/api/spaces/:id', require("./middlewares/space_helpers"));

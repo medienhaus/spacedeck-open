@@ -3,7 +3,8 @@
 var express = require('express');
 var router = express.Router();
 
-// var config = require('config');
+var config = require('config');
+var crypto = require('crypto');
 const db = require('../../models/db');
 
 
@@ -55,8 +56,30 @@ router.post('/', (req, res, next) => {
             if (err) {
                 return next(err);
             }
-
-            return res.redirect('/');
+            crypto.randomBytes(48, function(ex, buf) {
+            var token = buf.toString('hex');
+    
+            var session = {
+                user_id: user._id,
+                token: token,
+                ip: req.ip,
+                device: "web",
+                created_at: new Date()
+            };
+    
+            db.Session.create(session)
+                .error(err => {
+                    console.error("Error creating Session:",err);
+                    res.sendStatus(500);
+                })
+                .then(() => {
+                    var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : req.headers.hostname;
+                    res.cookie('sdsession', token, { domain: domain, httpOnly: true });
+                    res.status(201).json(session);
+                });
+            });
+            // res.status(201).json(user);
+            // return res.redirect('/');
         });
 
     })(req, res, next);
