@@ -38,6 +38,7 @@
     "passport": "^0.4.1",
     "passport-ldapauth": "^3.0.1",
     "passport-local": "^1.0.0",
+    "pg": "^8.5.1",
     "phantomjs-prebuilt": "^2.1.16",
     "read-chunk": "^2.1.0",
     "request": "^2.88.0",
