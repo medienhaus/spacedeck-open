@@ -1,88 +1,119 @@
 "use strict";
 
+const db = require('../../models/db');
 var express = require('express');
 var router = express.Router();
-
 var config = require('config');
-var crypto = require('crypto');
-const db = require('../../models/db');
+const usersHelper = require('../../helpers/users');
 
 
 var passport = require('passport')
   , LdapStrategy = require('passport-ldapauth');
 
 var opts = {
+    usernameField: 'email',
+    passwordField: 'password',
     server: {
-        url: 'ldaps://ad.corporate.com:636',
-        bindDN: 'cn=non-person,ou=system,dc=corp,dc=corporate,dc=com',
-        bindCredentials: 'secret',
-        searchBase: 'dc=corp,dc=corporate,dc=com',
-        searchFilter: '(&(objectcategory=person)(objectclass=user)(|(samaccountname={{username}})(mail={{username}})))',
-        searchAttributes: ['displayName', 'mail'],
-        tlsOptions: {
-            ca: [
-                tfs.readFileSync('/path/to/root_ca_cert.crt')
-            ]
-        }
+        url: config.get("auth_ldap_server"),
+        bindDN: config.get("auth_ldap_bind_dn"),
+        bindCredentials: config.get("auth_ldap_bind_credentials"),
+        searchBase: config.get("auth_ldap_search_base"),
+        searchFilter: config.get("auth_ldap_search_filter"),
+        searchAttributes: config.get("auth_ldap_search_attributes")
+        // tlsOptions: {
+        //     ca: [
+        //         tfs.readFileSync('/path/to/root_ca_cert.crt')
+        //     ]
+        // }
     }
 };
 
 passport.use(new LdapStrategy(opts));
 
 passport.serializeUser(function(user, done) {
-    done(null, user._id);
+    done(null, user);
 });
 
-passport.deserializeUser(function(id, done) {
-    db.User.findById(id).then(function(user) {
-        done(null, user);
-    }).error(err => {
-        done(err);
+passport.deserializeUser(function(user, done) {
+    db.User.findOne({where: {email: user.uid}})
+        .error(err => {
+            return done(err);
+        })
+    .then(user => {
+      if (!user) {
+        return done(null, false, { message: 'User not found.' });
+      }
+      return done(null, user);
     });
 });
+
 router.post('/', (req, res, next) => {
     passport.authenticate('ldapauth',
     (err, user, info) => {
-        console.log('LDAPSTRATEGY');
         if (err) {
             return next(err);
         }
-
         if (!user) {
             return res.redirect('/login?info=' + info);
         }
-
         req.logIn(user, function(err) {
             if (err) {
                 return next(err);
             }
-            crypto.randomBytes(48, function(ex, buf) {
-            var token = buf.toString('hex');
-    
-            var session = {
-                user_id: user._id,
-                token: token,
-                ip: req.ip,
-                device: "web",
-                created_at: new Date()
-            };
-    
-            db.Session.create(session)
-                .error(err => {
-                    console.error("Error creating Session:",err);
-                    res.sendStatus(500);
-                })
-                .then(() => {
-                    var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : req.headers.hostname;
-                    res.cookie('sdsession', token, { domain: domain, httpOnly: true });
+            var email = user.mail.toLowerCase();
+            var nickname = user.uid.toLowerCase();
+            var password = "";
+            var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : req.headers.hostname;
+
+            db.User.findAll({where: {email: email}})
+            .then(users => {
+            if (users.length == 0) {
+                usersHelper.createUser(email, nickname, password, "en", "Home")
+                .then((user) => {
+                    usersHelper.createSession(user, req.ip)
+                    .then((session) => {
+                        res.cookie('sdsession', session.token, { domain: domain, httpOnly: true });
+                        res.status(201).json(session);
+                    }).catch((err) => {
+                        res.status(400).json(err);
+                    });
+                }).catch((err) => {
+                    res.status(500).json(err);
+                }); 
+            } else {
+                usersHelper.createSession(users[0], req.ip)
+                .then((session) => {
+                    res.cookie('sdsession', session.token, { domain: domain, httpOnly: true });
                     res.status(201).json(session);
+                }).catch((err) => {
+                    res.status(500).json(err);
                 });
+                // res.status(400).json({"error":"user_email_already_used"});
+            }
             });
+            
             // res.status(201).json(user);
             // return res.redirect('/');
         });
 
     })(req, res, next);
 });
+
+router.delete('/current', function(req, res, next) {
+    if (req.user) {
+        req.logout();
+      var token = req.cookies['sdsession'];
+      db.Session.findOne({where: {token: token}})
+        .then(session => {
+          session.destroy();
+        });
+      var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : req.headers.hostname;
+      res.clearCookie('sdsession', { domain: domain });
+      res.sendStatus(204);
+    } else {
+      res.sendStatus(404);
+    }
+  });
+  
 
 module.exports = router;
