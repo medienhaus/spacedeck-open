@@ -5,7 +5,7 @@
 
   <div class="header-right pull-right">
     <a v-if="active_view != 'login'" class="btn btn-md btn-dark btn-round" href="/login"><%= __("login") %></a>
-    <a v-if="active_view != 'signup'" class="btn btn-md btn-dark btn-round" href="/signup"><%= __("signup") %></a>
+    <!-- <a v-if="active_view != 'signup'" class="btn btn-md btn-dark btn-round" href="/signup"><%= __("signup") %></a> -->
   </div>
 </header>
 
@@ -21,7 +21,7 @@
 
         <div class="tight">
           <div class="form-group">
-            <input class="input" name="email" type="email" required v-model="user_forms_email" placeholder="<%=__("email")%>">
+            <input class="input" name="email" type="text" required v-model="user_forms_email" placeholder="<%=__("email")%>">
           </div>
           <div class="form-group">
             <input class="input" name="password" type="password" required v-model="login_password" placeholder="<%=__("password")%>">
@@ -35,9 +35,9 @@
 
         <div class="center alert alert-danger" v-if="login_error">{{login_error}}</div>
 
-        <div style="margin-top:2em">
+        <!-- <div style="margin-top:2em">
           <a href="/password-reset">Forgot Password</a>
-        </div>
+        </div> -->
       </form>
     </div>
   </div>
