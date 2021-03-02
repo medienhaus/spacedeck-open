@@ -23,7 +23,7 @@ var opts = {
     }
 };
 
-if(config.has('starttls')) {
+if(config.has('auth_ldap_starttls')) {
     opts.server.starttls = true;
 }
 if(config.has('auth_ldap_tls_cert')) {
