@@ -20,13 +20,19 @@ var opts = {
         searchBase: config.get("auth_ldap_search_base"),
         searchFilter: config.get("auth_ldap_search_filter"),
         searchAttributes: config.get("auth_ldap_search_attributes")
-        // tlsOptions: {
-        //     ca: [
-        //         tfs.readFileSync('/path/to/root_ca_cert.crt')
-        //     ]
-        // }
     }
 };
+
+if(config.has('starttls')) {
+    opts.server.starttls = true;
+}
+if(config.has('auth_ldap_tls_cert')) {
+    opts.server.tlsOptions = {
+        ca: [
+            tfs.readFileSync(config.get("auth_ldap_tls_cert"))
+        ]
+    }
+}
 
 passport.use(new LdapStrategy(opts));
 
