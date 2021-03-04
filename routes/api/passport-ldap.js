@@ -19,13 +19,15 @@ var opts = {
         bindCredentials: config.get("auth_ldap_bind_credentials"),
         searchBase: config.get("auth_ldap_search_base"),
         searchFilter: config.get("auth_ldap_search_filter"),
-        searchAttributes: config.get("auth_ldap_search_attributes")
+        searchAttributes: config.get("auth_ldap_search_attributes"),
+        tlsOptions: {}
     }
 };
+opts.server.starttls = true;
+opts.server.tlsOptions.rejectUnauthorized = false;
 
-if(config.has('auth_ldap_starttls')) {
-    opts.server.starttls = true;
-}
+// if(config.has('auth_ldap_starttls')) {
+// }
 if(config.has('auth_ldap_tls_cert')) {
     opts.server.tlsOptions = {
         ca: [
@@ -60,7 +62,8 @@ router.post('/', (req, res, next) => {
             return next(err);
         }
         if (!user) {
-            return res.redirect('/login?info=' + info);
+            return res.status(400).json({"error": info.message});
+            // return res.redirect('/login?info=' + info);
         }
         req.logIn(user, function(err) {
             if (err) {
