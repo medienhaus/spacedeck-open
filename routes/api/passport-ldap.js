@@ -1,5 +1,7 @@
 "use strict";
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 const db = require('../../models/db');
 var express = require('express');
 var router = express.Router();
