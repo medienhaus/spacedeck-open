@@ -23,11 +23,10 @@ var opts = {
         tlsOptions: {}
     }
 };
-opts.server.starttls = true;
-opts.server.tlsOptions.rejectUnauthorized = false;
-
-// if(config.has('auth_ldap_starttls')) {
-// }
+if(config.has('auth_ldap_starttls')) {
+    opts.server.tlsOptions.starttls = true;
+    // opts.server.tlsOptions.rejectUnauthorized = false;
+}
 if(config.has('auth_ldap_tls_cert')) {
     opts.server.tlsOptions = {
         ca: [
