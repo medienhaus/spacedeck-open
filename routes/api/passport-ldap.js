@@ -1,6 +1,6 @@
 "use strict";
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
 
 const db = require('../../models/db');
 var express = require('express');
@@ -27,7 +27,7 @@ var opts = {
 };
 if(config.has('auth_ldap_starttls')) {
     opts.server.tlsOptions.starttls = true;
-    // opts.server.tlsOptions.rejectUnauthorized = false;
+    opts.server.rejectUnauthorized = false;
 }
 if(config.has('auth_ldap_tls_cert')) {
     opts.server.tlsOptions = {
