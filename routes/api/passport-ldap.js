@@ -70,7 +70,8 @@ router.post('/', (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            var email = user.mailRoutingAddress.toLowerCase();
+            // var email = user.mailRoutingAddress.toLowerCase();
+            var email = user[config.get('auth_ldap_mail_attribute')].toLowerCase();
             var nickname = user.uid;
             var password = "";
             var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : req.headers.hostname;

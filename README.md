@@ -122,7 +122,8 @@ and edit config/default.json appropiately.
 "auth_ldap_bind_credentials": "secret",
 "auth_ldap_search_base": "dc=corp,dc=corporate,dc=com",
 "auth_ldap_search_filter": "(uid={{username}})",
-"auth_ldap_search_attributes": ["uid", "mail"]
+"auth_ldap_search_attributes": ["uid", "mail"],
+"auth_ldap_mail_attribute": "mail"
 ```
 
 # Data Storage
