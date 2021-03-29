@@ -44,7 +44,7 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(user, done) {
-    db.User.findOne({where: {email: user.uid}})
+    db.User.findOne({where: {nickname: user.uid}})
         .error(err => {
             return done(err);
         })
@@ -70,8 +70,8 @@ router.post('/', (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            var email = user.mail.toLowerCase();
-            var nickname = user.uid.toLowerCase();
+            var email = user.mailRoutingAddress.toLowerCase();
+            var nickname = user.uid;
             var password = "";
             var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : req.headers.hostname;
 
