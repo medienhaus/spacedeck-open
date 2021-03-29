@@ -37,7 +37,7 @@ Spacedeck requires:
 
 To run Spacedeck, you only need Node.JS 10.x.
 
-To install all node dependencies, run (do this once):
+To install all node dependencies, run (do this once) after cloning the repository:
 
     npm install
 
@@ -153,12 +153,9 @@ Adapt the other values as needed
 # Run with Docker
 
 - configure `config/default.json`
-- configure `volumes` section inside `docker-compose.yml`
-  - point to `database.sqlite` on the host system
-  - `touch database.sqlite` if it not exists
-  - point to `storage/` on the host system
-  - `mkdir storage/` if it not exists
-- start the container with `sudo docker-compose up -f docker-compose.yml -d --build`
+- adapt your `docker-compose.yml` if needed.
+- start the container with `docker-compose up`
+  (use `-d` for background process and `--build` for rebuilding the image)
 
 # Hacking
 
