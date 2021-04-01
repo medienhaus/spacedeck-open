@@ -104,8 +104,8 @@ router.get('/en', (req, res) => {
   res.redirect("/t/end");
 });
 
-router.get('/account', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
-  res.render('spacedeck');
+router.get('/account', (req, res) => {
+  res.render('spacedeck', { config:config });
 });
 
 router.get('/login', (req, res) => {
