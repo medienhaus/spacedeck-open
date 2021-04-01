@@ -7,3 +7,5 @@ database.sqlite
 *~
 storage/
 .DS_Store
+postgres/
+.postgres/
