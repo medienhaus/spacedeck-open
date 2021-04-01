@@ -188,7 +188,7 @@ router.post('/', function(req, res, next) {
       attrs.access_mode = "private";
       
       db.Space.create(attrs).then(createdSpace => {
-        res.status(201).json(createdSpace);
+        // res.status(201).json(createdSpace);
         
         // create initial admin membership
         var membership = {
