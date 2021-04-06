@@ -9,3 +9,4 @@ storage/
 .DS_Store
 postgres/
 .postgres/
+config/default-*.json
