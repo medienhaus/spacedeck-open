@@ -53,7 +53,8 @@ module.exports = {
     prefs_email_notifications: Sequelize.STRING,
     prefs_email_digest: Sequelize.STRING,
     created_at: {type: Sequelize.DATE, defaultValue: Sequelize.NOW},
-    updated_at: {type: Sequelize.DATE, defaultValue: Sequelize.NOW}
+    updated_at: {type: Sequelize.DATE, defaultValue: Sequelize.NOW},
+    external_uid: Sequelize.STRING,
   }),
 
   CreatorSafeInclude: function(db) {

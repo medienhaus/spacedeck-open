@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const db = require('../models/db');
 const uuidv4 = require('uuid/v4');
 
-var createUser = function(email, nickname, password, locale, homeFolderName) {
+var createUser = function(email, external_uid, nickname, password, locale, homeFolderName) {
     return new Promise((resolve, reject) => {
         bcrypt.genSalt(10, function(err, salt) {
             bcrypt.hash(password, salt, function(err, hash) {
@@ -17,6 +17,7 @@ var createUser = function(email, nickname, password, locale, homeFolderName) {
                 email: email,
                 account_type: "email",
                 nickname: nickname,
+                external_uid: external_uid,
                 password_hash: hash,
                 prefs_language: locale,
                 confirmation_token: token

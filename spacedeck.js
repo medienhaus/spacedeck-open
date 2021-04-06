@@ -67,8 +67,8 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 // add passpoert email/password auth
 app.use(session({ secret: config.get('session_key') }));
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 //app.use(helmet.frameguard())
 //app.use(helmet.xssFilter())
@@ -101,8 +101,8 @@ spaceRouter.use('/:id/messages', require('./routes/api/space_messages'));
 spaceRouter.use('/:id/digest', require('./routes/api/space_digest'));
 spaceRouter.use('/:id', require('./routes/api/space_exports'));
 
-// app.use('/api/sessions', require('./routes/api/passport-ldap'));
-app.use('/api/sessions', require('./routes/api/sessions'));
+app.use('/api/sessions', require('./routes/api/passport-ldap'));
+// app.use('/api/sessions', require('./routes/api/sessions'));
 //app.use('/api/webgrabber', require('./routes/api/webgrabber'));
 app.use('/', require('./routes/root'));
 

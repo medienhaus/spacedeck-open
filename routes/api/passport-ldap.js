@@ -44,7 +44,8 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(user, done) {
-    db.User.findOne({where: {nickname: user.uid}})
+    console.log('deserialize', user)
+    db.User.findOne({where: {external_uid: user.uid}})
         .error(err => {
             return done(err);
         })
@@ -70,16 +71,16 @@ router.post('/', (req, res, next) => {
             if (err) {
                 return next(err);
             }
-            // var email = user.mailRoutingAddress.toLowerCase();
+
             var email = user[config.get('auth_ldap_mail_attribute')].toLowerCase();
-            var nickname = user.uid;
+            var external_uid = config.has('auth_ldap_uid_attribute') ? user[config.get('auth_ldap_uid_attribute')] : user.uid;
+            var nickname = config.has('auth_ldap_nickname_attribute') ? user[config.get('auth_ldap_nickname_attribute')] : user.uid;
             var password = "";
             var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : req.headers.hostname;
-
             db.User.findAll({where: {email: email}})
             .then(users => {
             if (users.length == 0) {
-                usersHelper.createUser(email, nickname, password, "en", "Home")
+                usersHelper.createUser(email, external_uid, nickname, password, "en", "Home")
                 .then((user) => {
                     usersHelper.createSession(user, req.ip)
                     .then((session) => {
