@@ -72,9 +72,9 @@ router.post('/', (req, res, next) => {
                 return next(err);
             }
 
-            var email = user[config.get('auth_ldap_mail_attribute')].toLowerCase();
-            var external_uid = config.has('auth_ldap_uid_attribute') ? user[config.get('auth_ldap_uid_attribute')] : user.uid;
-            var nickname = config.has('auth_ldap_nickname_attribute') ? user[config.get('auth_ldap_nickname_attribute')] : user.uid;
+            var email = user[config.get('auth_ldap_attribute_mail')].toLowerCase();
+            var external_uid = config.has('auth_ldap_attribute_uid') ? user[config.get('auth_ldap_attribute_uid')] : user.uid;
+            var nickname = config.has('auth_ldap_attribute_name') ? user[config.get('auth_ldap_attribute_name')] : user.uid;
             var password = "";
             var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : req.headers.hostname;
             db.User.findAll({where: {email: email}})
