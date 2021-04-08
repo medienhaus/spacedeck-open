@@ -3,11 +3,7 @@
 module.exports = {
   up: function(migration, DataTypes) {
     return Promise.all([
-      migration.changeColumn('users', 'external_uid',
-        {
-          type: DataTypes.STRING
-        }
-      )
+      migration.addColumn('users', 'external_uid', DataTypes.STRING)
     ])
   },
 
