@@ -148,7 +148,7 @@ router.get('/s/:hash', (req, res) => {
   });
 });
 
-router.get('/spaces/:id', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+router.get('/spaces/:id', (req, res) => {
   res.render('spacedeck', { config:config, user:req.user });
 });
 
