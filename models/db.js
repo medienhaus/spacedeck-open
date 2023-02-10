@@ -53,7 +53,8 @@ module.exports = {
     prefs_email_notifications: Sequelize.STRING,
     prefs_email_digest: Sequelize.STRING,
     created_at: {type: Sequelize.DATE, defaultValue: Sequelize.NOW},
-    updated_at: {type: Sequelize.DATE, defaultValue: Sequelize.NOW}
+    updated_at: {type: Sequelize.DATE, defaultValue: Sequelize.NOW},
+    external_uid: Sequelize.STRING,
   }),
 
   CreatorSafeInclude: function(db) {
@@ -240,35 +241,40 @@ module.exports = {
       foreignKey: {
         name: 'space_id'
       },
-      as: 'space'
+      as: 'space',
+      onDelete: "CASCADE",
     });
 
     Artifact.belongsTo(User, {
       foreignKey: {
         name: 'user_id'
       },
-      as: 'user'
+      as: 'user',
+      onDelete: "CASCADE",
     });
 
     Artifact.belongsTo(Space, {
       foreignKey: {
         name: 'space_id'
       },
-      as: 'space'
+      as: 'space',
+      onDelete: "CASCADE",
     });
 
     Message.belongsTo(User, {
       foreignKey: {
         name: 'user_id'
       },
-      as: 'user'
+      as: 'user',
+      onDelete: "CASCADE",
     });
 
     Message.belongsTo(Space, {
       foreignKey: {
         name: 'space_id'
       },
-      as: 'space'
+      as: 'space',
+      onDelete: "CASCADE",
     });
 
     await sequelize.sync();

@@ -105,6 +105,29 @@ For advanced media conversion:
 - audiowaveform for audio waveform rendering. Download: https://github.com/bbcrd/audiowaveform
 - ghostscript for PDF import. Download: https://www.ghostscript.com/download/gsdnld.html
 
+# Authentication
+
+## LDAP
+
+Add the [passport-ldapauth](https://github.com/vesse/passport-ldapauth) module
+
+`npm install passport-ldapauth`
+
+and edit config/default.json appropiately.
+
+```
+"auth_type": "ldap",
+"auth_ldap_server": "ldaps://ad.corporate.com:636",
+"auth_ldap_bind_dn": "cn=non-person,ou=system,dc=corp,dc=corporate,dc=com",
+"auth_ldap_bind_credentials": "secret",
+"auth_ldap_search_base": "dc=corp,dc=corporate,dc=com",
+"auth_ldap_search_filter": "(uid={{username}})",
+"auth_ldap_search_attributes": ["uid", "mail", "name"],
+"auth_ldap_attribute_uid": "uid",
+"auth_ldap_attribute_mail": "mail",
+"auth_ldap_attribute_name": "name"
+```
+
 # Data Storage
 
 By default, media files are uploaded to the `storage` folder.

@@ -73,7 +73,7 @@ SpacedeckUsers = {
         // FIXME: handle error
       }.bind(this));
     },
-
+    
     login_submit: function(email, password, $event, on_success) {
       this.loading_user = true;
       this.login_error = null;
@@ -84,7 +84,7 @@ SpacedeckUsers = {
       }
 
       create_session(email, password, function(session) {
-        console.log("session: ", session);
+        console.log(session)
         this.loading_user = false;
         this.session = session;
         this.finalize_login(session.token, on_success);
