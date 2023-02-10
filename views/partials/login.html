@@ -1,6 +1,6 @@
 <header id="landing-header" class="header" v-cloak v-if="(active_view == 'login' || active_view == 'signup' || active_view == 'password-reset' || active_view == 'password-confirm')">
   <div class="header-left">
-    <a class="btn btn-transparent btn-nude" href="/"><img src="/images/sd6-logo-black.svg" width="190"></a>
+    <a class="btn btn-transparent btn-nude" href="/"><img src="/images/medienhaus.svg" width="40"><span class="sketch">/sketch</span></a>
   </div>
 
   <div class="header-right pull-right">
@@ -21,10 +21,10 @@
 
         <div class="tight">
           <div class="form-group">
-            <input class="input" name="email" type="text" required v-model="user_forms_email" placeholder="<%=__("email")%>">
+            <input class="input" name="email" type="text" required v-model="user_forms_email" placeholder="username">
           </div>
           <div class="form-group">
-            <input class="input" name="password" type="password" required v-model="login_password" placeholder="<%=__("password")%>">
+            <input class="input" name="password" type="password" required v-model="login_password" placeholder="password">
           </div>
         </div>
 
