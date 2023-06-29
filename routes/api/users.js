@@ -2,26 +2,21 @@
 
 var config = require('config');
 const db = require('../../models/db');
-const uuidv4 = require('uuid/v4');
 const os = require('os');
 
+var usersHelper = require('../../helpers/users');
 var mailer = require('../../helpers/mailer');
 var uploader = require('../../helpers/uploader');
-var importer = require('../../helpers/importer');
 
 var bcrypt = require('bcryptjs');
 var crypto = require('crypto');
-var async = require('async');
 var _ = require('underscore');
 var fs = require('fs');
-var request = require('request');
 var gm = require('gm');
 var validator = require('validator');
-var URL = require('url').URL;
 
 var express = require('express');
 var router = express.Router();
-var glob = require('glob');
 
 router.get('/current', function(req, res, next) {
   if (req.user) {
@@ -67,71 +62,19 @@ router.post('/', function(req, res) {
     return;
   }
   
-  var createUser = function() {
-    bcrypt.genSalt(10, function(err, salt) {
-      bcrypt.hash(password, salt, function(err, hash) {
-        crypto.randomBytes(16, function(ex, buf) {
-          var token = buf.toString('hex');
-
-          var u = {
-            _id: uuidv4(),
-            email: email,
-            account_type: "email",
-            nickname: nickname,
-            password_hash: hash,
-            prefs_language: req.i18n.locale,
-            confirmation_token: token
-          };
-
-          db.User.create(u)
-            .error(err => {
-              res.sendStatus(400);
-            })
-            .then(u => {
-              var homeFolder = {
-                _id: uuidv4(),
-                name: req.i18n.__("home"),
-                space_type: "folder",
-                creator_id: u._id
-              };
-              db.Space.create(homeFolder)
-                .error(err => {
-                  res.sendStatus(400);
-                })
-                .then(homeFolder => {
-                  u.home_folder_id = homeFolder._id;
-                  u.save()
-                    .then(() => {
-                      // home folder created,
-                      // auto accept pending invites
-                      db.Membership.update({
-                        "state": "active"
-                      }, {
-                        where: {
-                          "email_invited": u.email,
-                          "state": "pending"
-                        }
-                      });
-                      res.status(201).json({});          
-                    })
-                    .error(err => {
-                      res.status(400).json(err);
-                    });
-                })
-            });
-        });
-      });
-    });
-  };
-  
   db.User.findAll({where: {email: email}})
     .then(users => {
       if (users.length == 0) {
-        createUser();
+        usersHelper.createUser(email, nickname, password, req.i18n.locale, req.i18n.__("home"))
+        .then((user) => {
+          res.status(201).json({});
+        }).catch((err) => {
+          res.status(400).json(err);
+        }); 
       } else {
         res.status(400).json({"error":"user_email_already_used"});
       }
-    })
+    });
 });
 
 router.get('/current', function(req, res, next) {

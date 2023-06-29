@@ -1,8 +1,8 @@
 "use strict";
 
-const db = require('./models/db.js');
 require("log-timestamp");
 
+const db = require('./models/db.js');
 const config = require('config');
 const redis = require('./helpers/redis');
 const websockets = require('./helpers/websockets');
@@ -16,8 +16,12 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
+// authentication
+const passport = require('passport');
+const session = require("express-session");
+
 const i18n = require('i18n-2');
-const helmet = require('helmet');
+// const helmet = require('helmet');
 
 const express = require('express');
 const app = express();
@@ -61,7 +65,12 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(cookieParser());
-//app.use(helmet.frameguard({ action: 'SAMEORIGIN' }));
+// add passpoert email/password auth
+app.use(session({ secret: config.get('session_key') }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+//app.use(helmet.frameguard())
 //app.use(helmet.xssFilter())
 /*app.use(helmet.hsts({
   maxAge: 7776000000,
@@ -72,7 +81,9 @@ app.disable('x-powered-by');
 
 //app.use(require("./middlewares/error_helpers"));
 //app.use(require("./middlewares/cors"));
+
 app.use(require("./middlewares/session"));
+
 app.use(require("./middlewares/i18n"));
 app.use("/api", require("./middlewares/api_helpers"));
 app.use('/api/spaces/:id', require("./middlewares/space_helpers"));
@@ -90,7 +101,8 @@ spaceRouter.use('/:id/messages', require('./routes/api/space_messages'));
 spaceRouter.use('/:id/digest', require('./routes/api/space_digest'));
 spaceRouter.use('/:id', require('./routes/api/space_exports'));
 
-app.use('/api/sessions', require('./routes/api/sessions'));
+app.use('/api/sessions', require('./routes/api/passport-ldap'));
+// app.use('/api/sessions', require('./routes/api/sessions'));
 //app.use('/api/webgrabber', require('./routes/api/webgrabber'));
 app.use('/', require('./routes/root'));
 
