@@ -76,7 +76,7 @@ router.post('/', (req, res, next) => {
             var external_uid = config.has('auth_ldap_attribute_uid') ? user[config.get('auth_ldap_attribute_uid')] : user.uid;
             var nickname = config.has('auth_ldap_attribute_name') ? user[config.get('auth_ldap_attribute_name')] : user.uid;
             var password = "";
-            var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : req.headers.hostname;
+            var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : new URL(req.headers.origin).hostname;
             db.User.findAll({where: {email: email}})
             .then(users => {
             if (users.length == 0) {
@@ -119,7 +119,7 @@ router.delete('/current', function(req, res, next) {
         .then(session => {
           session.destroy();
         });
-      var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : req.headers.hostname;
+      var domain = (process.env.NODE_ENV == "production") ? new URL(config.get('endpoint')).hostname : new URL(req.headers.origin).hostname;
       res.clearCookie('sdsession', { domain: domain });
       res.sendStatus(204);
     } else {
