@@ -27,7 +27,7 @@ router.get('/current', function(req, res, next) {
     u.token = req.cookies['sdsession'];
 
     // If the request headers contain "X-Spacedeck-Auth", set a cookie named 'sdsession' with the value of "X-Spacedeck-Auth".
-    if(req.headers["X-Spacedeck-Auth"]) res.cookie('sdsession', req.headers["X-Spacedeck-Auth"], { domain: domain, httpOnly: true });
+    if(req.headers["x-spacedeck-auth"]) res.cookie('sdsession', req.headers["x-spacedeck-auth"], {httpOnly: true });
     
     res.status(200).json(u);
   } else {
